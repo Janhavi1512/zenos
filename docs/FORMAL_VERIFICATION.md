@@ -163,9 +163,21 @@ passed as facts.
 ## Building and checking
 
 ```
+# once: install elan, Lean's toolchain manager (https://github.com/leanprover/elan)
+curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
+
+git clone https://github.com/zenos-org/zenos && cd zenos
 cd formal && lake build          # checks every proof and builds .lake/build/bin/zenos-decide
-python3 -m unittest tests/test_decide.py
+cd .. && python3 -m unittest tests/test_decide.py
 ```
+
+elan picks the Lean version from `formal/lean-toolchain` by itself. If `lake build` finishes without an error,
+every theorem in `formal/` has been checked by Lean's kernel on your machine, and `Axioms.lean` has confirmed
+that none of them uses `sorry` or an added axiom.
+
+A short reading order for a first look: `Flow.lean` (one decision, with the
+[walkthrough](https://github.com/zenos-org/zenos/discussions/11)), then the theorems in `Proofs.lean` against the
+tables above, then `Axioms.lean`, then "What is trusted, not proved" above, where the proofs stop.
 
 `packaging/build-deb.sh` builds it the same way and installs the program as `/usr/lib/zenos/zenos-decide`.
 Lean 4 v4.34.1 (`formal/lean-toolchain`); no other dependency.
